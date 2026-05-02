@@ -11,6 +11,7 @@ import Link from "next/link"
 import TipTapEditor from "@/components/notes/TipTapEditor"
 import EditorToolbar from "@/components/notes/EditorToolbar"
 import { useAutoSave } from "@/hooks/useAutoSave"
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 
 export default function NewNotePage() {
   const router = useRouter()
@@ -69,6 +70,28 @@ export default function NewNotePage() {
     clearDraft()
     setShowDraftPrompt(false)
   }
+
+  // 键盘快捷键：Ctrl+S 保存
+  useKeyboardShortcuts([
+    {
+      key: "s",
+      modifiers: { ctrl: true },
+      callback: e => {
+        e.preventDefault()
+        if (!loading && formData.title.trim() && formData.content.trim()) {
+          handleSubmit(e as any)
+        }
+      },
+      enabled: !isSubmitting,
+    },
+    {
+      key: "Escape",
+      callback: () => {
+        router.push("/dashboard")
+      },
+      preventDefault: false,
+    },
+  ])
 
   // 图片上传处理函数
   const handleImageUpload = useCallback(

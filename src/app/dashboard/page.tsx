@@ -16,6 +16,7 @@ import { Plus, FileText, LogOut, Lock, Trash2, ArrowUpDown, Search, CheckSquare,
 import { signOut } from "next-auth/react"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -46,6 +47,42 @@ export default function DashboardPage() {
   // Intersection Observer ref for infinite scroll
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadingRef = useRef(false)
+
+  // 键盘快捷键
+  useKeyboardShortcuts([
+    {
+      key: "n",
+      modifiers: { ctrl: true },
+      callback: () => {
+        router.push("/notes/new")
+      },
+    },
+    {
+      key: "f",
+      modifiers: { ctrl: true },
+      callback: () => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus()
+        }
+      },
+    },
+    {
+      key: "Escape",
+      callback: () => {
+        // 如果在搜索状态，清除搜索
+        if (searchQuery) {
+          handleClearSearch()
+        }
+        // 如果在选择模式，退出选择模式
+        if (isSelectMode) {
+          setIsSelectMode(false)
+          setSelectedNotes(new Set())
+        }
+      },
+      enabled: true,
+      preventDefault: false,
+    },
+  ])
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -488,7 +525,7 @@ export default function DashboardPage() {
                               e.stopPropagation()
                               toggleNoteSelection(note.id)
                             }}
-                            className="p-1 rounded-sm bg-white shadow-sm hover:bg-gray-50 transition-colors"
+                            className="p-1 rounded-sm bg-background border border-border shadow-sm hover:bg-muted transition-colors"
                           >
                             {isSelected ? (
                               <CheckSquare className="h-5 w-5 text-primary" />

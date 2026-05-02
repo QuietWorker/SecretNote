@@ -14,6 +14,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog"
 import TipTapEditor from "@/components/notes/TipTapEditor"
 import EditorToolbar from "@/components/notes/EditorToolbar"
 import { useAutoSave } from "@/hooks/useAutoSave"
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 
 export default function NoteDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -187,6 +188,48 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
   const cancelDelete = () => {
     setDeleteDialogOpen(false)
   }
+
+  // 键盘快捷键
+  useKeyboardShortcuts([
+    {
+      key: "s",
+      modifiers: { ctrl: true },
+      callback: e => {
+        e.preventDefault()
+        if (isEditing && !saving && formData.title.trim() && formData.content.trim()) {
+          handleUpdate(e as any)
+        }
+      },
+      enabled: isEditing,
+    },
+    {
+      key: "e",
+      modifiers: { ctrl: true },
+      callback: e => {
+        e.preventDefault()
+        if (!isEditing) {
+          setIsEditing(true)
+        }
+      },
+      enabled: !isEditing,
+    },
+    {
+      key: "Escape",
+      callback: () => {
+        if (isEditing && note) {
+          setIsEditing(false)
+          setFormData({
+            title: note.title,
+            content: note.content || "",
+            isEncrypted: note.isEncrypted,
+          })
+        } else {
+          router.push("/dashboard")
+        }
+      },
+      preventDefault: false,
+    },
+  ])
 
   if (loading) {
     return (

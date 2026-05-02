@@ -97,21 +97,8 @@
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-minimal:hover {
-  background-color: #f9fafb;
-}
-
-.dark .btn-minimal:hover {
-  background-color: hsl(var(--muted));
-}
-
 .btn-minimal:active {
   transform: scale(0.98);
-  background-color: #f3f4f6;
-}
-
-.dark .btn-minimal:active {
-  background-color: hsl(var(--accent));
 }
 
 /* TipTap 编辑器样式 */
