@@ -15,6 +15,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   notes         Note[]
+  images        Image[]
 }
 
 model Note {
@@ -24,8 +25,24 @@ model Note {
   isEncrypted Boolean  @default(true)
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      Image[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  url       String   // 图片存储路径
+  noteId    String?
+  note      Note?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  size      Int      // 文件大小（字节）
+  mimeType  String   // 图片类型
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([noteId])
 }

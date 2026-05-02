@@ -9,9 +9,9 @@ export interface User {
 export interface Note {
   id: string
   title: string
-  content: string
+  content?: string // 列表 API 不返回 content
   isEncrypted: boolean
-  userId: string
+  userId?: string // 列表 API 不返回 userId
   createdAt: Date
   updatedAt: Date
 }

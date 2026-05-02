@@ -41,7 +41,7 @@ export function ConfirmDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* 背景遮罩 */}
       <div
-        className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0"
         }`}
         onClick={onCancel}
@@ -53,18 +53,18 @@ export function ConfirmDialog({
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
-        <Card className="glass border-0 shadow-2xl">
+        <Card className="shadow-lg">
           <CardHeader className="pb-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-full bg-red-100">
+                <div className="p-2 rounded-sm bg-red-50">
                   <AlertTriangle className="h-6 w-6 text-red-600" />
                 </div>
-                <CardTitle className="text-xl text-gray-800">{title}</CardTitle>
+                <CardTitle className="text-xl font-medium">{title}</CardTitle>
               </div>
               <button
                 onClick={onCancel}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="关闭"
               >
                 <X className="h-5 w-5" />
@@ -72,19 +72,19 @@ export function ConfirmDialog({
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600">{message}</p>
+            <p className="text-muted-foreground">{message}</p>
           </CardContent>
           <CardFooter className="flex justify-end space-x-3 pt-4">
             <Button
               variant="outline"
               onClick={onCancel}
-              className="button-hover transition-all duration-200"
+              className="btn-minimal"
             >
               {cancelText}
             </Button>
             <Button
               onClick={onConfirm}
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 button-hover transition-all duration-300"
+              className="bg-red-600 text-white hover:bg-red-700 btn-minimal"
             >
               {confirmText}
             </Button>

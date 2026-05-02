@@ -43,19 +43,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <div className="w-full max-w-md animate-fade-in">
-        <Card className="glass shadow-xl border-0 backdrop-blur-sm">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <div className="w-full max-w-md animate-subtle">
+        <Card className="transition-all duration-200 hover:shadow-sm">
           <CardHeader className="space-y-1 pb-2">
             <div className="flex items-center justify-center mb-6">
-              <div className="p-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-                <Lock className="h-8 w-8" />
+              <div className="p-3 rounded-sm bg-gray-100">
+                <Lock className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
-              私密备忘录
-            </CardTitle>
-            <CardDescription className="text-center text-gray-600">登录以访问您的加密备忘录</CardDescription>
+            <CardTitle className="text-2xl font-medium text-center">私密备忘录</CardTitle>
+            <CardDescription className="text-center">登录以访问您的加密备忘录</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -65,7 +63,7 @@ export default function LoginPage() {
               {error && (
                 <Alert
                   variant="destructive"
-                  className="animate-slide-in"
+                  className="animate-subtle"
                 >
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -74,7 +72,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   邮箱
                 </label>
@@ -85,14 +83,13 @@ export default function LoginPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="transition-all duration-300 focus:ring-2 focus:ring-blue-500/50"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   密码
                 </label>
@@ -103,13 +100,12 @@ export default function LoginPage() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="transition-all duration-300 focus:ring-2 focus:ring-blue-500/50"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 button-hover py-6 text-base font-medium"
+                className="w-full btn-minimal py-6 text-base font-medium"
                 disabled={loading}
               >
                 {loading ? (
@@ -141,11 +137,11 @@ export default function LoginPage() {
                 )}
               </Button>
 
-              <div className="text-center text-sm text-gray-600 pt-2">
-                还没有账号？{" "}
+              <div className="text-center text-sm text-muted-foreground pt-2">
+                还没有账号?{" "}
                 <Link
                   href="/register"
-                  className="font-medium text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                  className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   立即注册
                 </Link>
@@ -156,8 +152,8 @@ export default function LoginPage() {
 
         {/* 装饰元素 */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-white/20 text-sm text-gray-600">
-            <Lock className="h-4 w-4 mr-2 text-green-500" />
+          <div className="inline-flex items-center px-4 py-2 rounded-sm border text-sm text-muted-foreground">
+            <Lock className="h-4 w-4 mr-2" />
             端到端加密保护
           </div>
         </div>

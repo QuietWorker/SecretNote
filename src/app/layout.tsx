@@ -1,9 +1,12 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Noto_Sans_SC } from "next/font/google"
 import "./globals.css"
 import { AuthProvider } from "@/components/AuthProvider"
 
-const inter = Inter({ subsets: ["latin"] })
+const notoSans = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+})
 
 export const metadata: Metadata = {
   title: "私密备忘录",
@@ -17,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className={inter.className}>
+      <body className={notoSans.className}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

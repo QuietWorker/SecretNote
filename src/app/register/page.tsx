@@ -71,19 +71,17 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
-      <div className="w-full max-w-md animate-fade-in">
-        <Card className="glass shadow-xl border-0 backdrop-blur-sm">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <div className="w-full max-w-md animate-subtle">
+        <Card className="transition-all duration-200 hover:shadow-sm">
           <CardHeader className="space-y-1 pb-2">
             <div className="flex items-center justify-center mb-6">
-              <div className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                <Shield className="h-8 w-8" />
+              <div className="p-3 rounded-sm bg-gray-100">
+                <Shield className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              创建账号
-            </CardTitle>
-            <CardDescription className="text-center text-gray-600">开始使用安全的私密备忘录</CardDescription>
+            <CardTitle className="text-2xl font-medium text-center">创建账号</CardTitle>
+            <CardDescription className="text-center">开始使用安全的私密备忘录</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -93,7 +91,7 @@ export default function RegisterPage() {
               {error && (
                 <Alert
                   variant="destructive"
-                  className="animate-slide-in"
+                  className="animate-subtle"
                 >
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -102,7 +100,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="name"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   姓名（可选）
                 </label>
@@ -113,14 +111,13 @@ export default function RegisterPage() {
                   placeholder="您的姓名"
                   value={formData.name}
                   onChange={handleChange}
-                  className="transition-all duration-300 focus:ring-2 focus:ring-purple-500/50"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   邮箱
                 </label>
@@ -132,14 +129,13 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="transition-all duration-300 focus:ring-2 focus:ring-purple-500/50"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   密码
                 </label>
@@ -151,14 +147,13 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="transition-all duration-300 focus:ring-2 focus:ring-purple-500/50"
                 />
               </div>
 
               <div className="space-y-2">
                 <label
                   htmlFor="confirmPassword"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium"
                 >
                   确认密码
                 </label>
@@ -170,13 +165,12 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="transition-all duration-300 focus:ring-2 focus:ring-purple-500/50"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 button-hover py-6 text-base font-medium"
+                className="w-full btn-minimal py-6 text-base font-medium"
                 disabled={loading}
               >
                 {loading ? (
@@ -208,11 +202,11 @@ export default function RegisterPage() {
                 )}
               </Button>
 
-              <div className="text-center text-sm text-gray-600 pt-2">
-                已有账号？{" "}
+              <div className="text-center text-sm text-muted-foreground pt-2">
+                已有账号?{" "}
                 <Link
                   href="/login"
-                  className="font-medium text-purple-600 hover:text-purple-800 transition-colors duration-200"
+                  className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   立即登录
                 </Link>
@@ -223,8 +217,8 @@ export default function RegisterPage() {
 
         {/* 装饰元素 */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm border border-white/20 text-sm text-gray-600">
-            <Shield className="h-4 w-4 mr-2 text-green-500" />
+          <div className="inline-flex items-center px-4 py-2 rounded-sm border text-sm text-muted-foreground">
+            <Shield className="h-4 w-4 mr-2" />
             安全加密存储
           </div>
         </div>

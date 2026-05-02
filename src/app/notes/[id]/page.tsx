@@ -1,17 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ArrowLeft, Save, Trash2, Edit, Lock } from "lucide-react"
+import { ArrowLeft, Save, Trash2, Edit, Lock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Note } from "@/types"
 import { formatDate } from "@/lib/utils"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
+import TipTapEditor from "@/components/notes/TipTapEditor"
+import EditorToolbar from "@/components/notes/EditorToolbar"
+import { useAutoSave } from "@/hooks/useAutoSave"
 
 export default function NoteDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -27,6 +29,71 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [editor, setEditor] = useState<any>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // 使用自动保存 Hook（仅在编辑模式下）
+  const { saveStatus, clearDraft, setSubmitting } = useAutoSave(
+    formData,
+    async data => {
+      // 自动保存到服务器
+      if (isEditing && note) {
+        try {
+          const response = await fetch(`/api/notes/${params.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+
+          if (!response.ok) {
+            throw new Error("保存失败")
+          }
+
+          const result = await response.json()
+          setNote(result.note)
+        } catch (err) {
+          console.error("自动保存失败:", err)
+          throw err
+        }
+      }
+    },
+    {
+      debounceMs: 2000,
+      draftKey: `draft_note_${params.id}`,
+    }
+  )
+
+  // 图片上传处理函数
+  const handleImageUpload = useCallback(
+    async (file: File) => {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      try {
+        const response = await fetch("/api/upload/image", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || "图片上传失败")
+        }
+
+        const data = await response.json()
+        // 插入图片到编辑器
+        if (editor && data.url) {
+          editor.chain().focus().setImage({ src: data.url }).run()
+        }
+      } catch (err) {
+        console.error("图片上传错误:", err)
+        setError(err instanceof Error ? err.message : "图片上传失败")
+      }
+    },
+    [editor]
+  )
 
   useEffect(() => {
     fetchNote()
@@ -58,6 +125,8 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
     e.preventDefault()
     setError("")
     setSaving(true)
+    setIsSubmitting(true)
+    setSubmitting(true) // 暂停自动保存
 
     try {
       const response = await fetch(`/api/notes/${params.id}`, {
@@ -75,12 +144,16 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
       } else {
         setNote(data.note)
         setIsEditing(false)
+        // 手动保存后清除草稿
+        clearDraft()
         router.refresh()
       }
     } catch (err) {
       setError("更新失败，请稍后重试")
     } finally {
       setSaving(false)
+      setIsSubmitting(false)
+      setSubmitting(false) // 恢复自动保存
     }
   }
 
@@ -117,10 +190,10 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">加载中...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/30 border-t-primary mx-auto"></div>
+          <p className="mt-3 text-sm text-muted-foreground">加载中...</p>
         </div>
       </div>
     )
@@ -150,14 +223,14 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-      <header className="glass shadow-sm border-b sticky top-0 z-10">
+    <div className="min-h-screen bg-white">
+      <header className="border-b sticky top-0 z-10 bg-white">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/dashboard">
             <Button
               variant="ghost"
               size="sm"
-              className="button-hover transition-all duration-200 hover:bg-blue-50 hover:text-blue-600"
+              className="btn-minimal"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               返回
@@ -171,7 +244,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsEditing(true)}
-                  className="button-hover transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200"
+                  className="btn-minimal"
                 >
                   <Edit className="h-4 w-4 mr-2" />
                   编辑
@@ -181,7 +254,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                   size="sm"
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="button-hover transition-all duration-200"
+                  className="btn-minimal"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   {deleting ? "删除中..." : "删除"}
@@ -193,7 +266,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Card className="max-w-3xl mx-auto glass border-0 shadow-xl animate-fade-in">
+        <Card className="max-w-3xl mx-auto animate-subtle transition-all duration-200 hover:shadow-sm">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -201,28 +274,55 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                   <Input
                     value={formData.title}
                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                    className="text-2xl font-bold transition-all duration-300 focus:ring-2 focus:ring-blue-500/50"
+                    className="text-2xl font-medium"
                   />
                 ) : (
-                  <CardTitle className="text-2xl text-gray-800">{note.title}</CardTitle>
+                  <CardTitle className="text-2xl font-medium">{note.title}</CardTitle>
                 )}
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   创建于 {formatDate(note.createdAt)}
                   {note.updatedAt !== note.createdAt && ` · 更新于 ${formatDate(note.updatedAt)}`}
                 </p>
               </div>
-              {note.isEncrypted && (
-                <div className="p-2 rounded-full bg-green-100">
-                  <Lock className="h-6 w-6 text-green-600 ml-4" />
-                </div>
-              )}
+
+              <div className="flex items-center gap-3">
+                {note.isEncrypted && (
+                  <div className="p-2 rounded-sm bg-gray-100">
+                    <Lock className="h-6 w-6 text-muted-foreground ml-4" />
+                  </div>
+                )}
+
+                {/* 自动保存状态指示器（仅编辑模式） */}
+                {isEditing && !isSubmitting && (
+                  <div className="flex items-center text-sm">
+                    {saveStatus.status === "saving" && (
+                      <span className="flex items-center text-muted-foreground">
+                        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                        保存中...
+                      </span>
+                    )}
+                    {saveStatus.status === "saved" && (
+                      <span className="flex items-center text-green-600">
+                        <CheckCircle2 className="h-4 w-4 mr-1" />
+                        已保存
+                      </span>
+                    )}
+                    {saveStatus.status === "error" && (
+                      <span className="flex items-center text-red-600">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        保存失败
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </CardHeader>
           <CardContent>
             {error && (
               <Alert
                 variant="destructive"
-                className="mb-4 animate-slide-in"
+                className="mb-4 animate-subtle"
               >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
@@ -236,17 +336,22 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                 <div className="space-y-2">
                   <label
                     htmlFor="content"
-                    className="text-sm font-medium text-gray-700"
+                    className="text-sm font-medium"
                   >
                     内容
                   </label>
-                  <Textarea
-                    id="content"
-                    value={formData.content}
-                    onChange={e => setFormData({ ...formData, content: e.target.value })}
-                    rows={12}
-                    className="resize-none transition-all duration-300 focus:ring-2 focus:ring-blue-500/50"
-                  />
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <EditorToolbar
+                      editor={editor}
+                      onImageUpload={handleImageUpload}
+                    />
+                    <TipTapEditor
+                      content={formData.content}
+                      onChange={content => setFormData({ ...formData, content })}
+                      placeholder="开始输入内容..."
+                      onEditorReady={setEditor}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -260,13 +365,13 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                         isEncrypted: e.target.checked,
                       })
                     }
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded-sm border-gray-300 text-primary focus:ring-primary"
                   />
                   <label
                     htmlFor="isEncrypted"
-                    className="text-sm flex items-center text-gray-700"
+                    className="text-sm flex items-center"
                   >
-                    <Lock className="h-4 w-4 mr-1 text-green-500" />
+                    <Lock className="h-4 w-4 mr-1" />
                     加密此笔记
                   </label>
                 </div>
@@ -275,7 +380,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                   <Button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 button-hover transition-all duration-300"
+                    className="flex-1 btn-minimal"
                   >
                     {saving ? (
                       <span className="flex items-center justify-center">
@@ -319,7 +424,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                         isEncrypted: note.isEncrypted,
                       })
                     }}
-                    className="flex-1 button-hover transition-all duration-200 hover:bg-gray-50"
+                    className="flex-1 btn-minimal"
                   >
                     取消
                   </Button>
@@ -327,9 +432,10 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
               </form>
             ) : (
               <div className="prose max-w-none">
-                <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700 p-4 bg-white/50 rounded-lg border border-gray-100">
-                  {note.content}
-                </div>
+                <div
+                  className="text-sm leading-relaxed p-4 bg-secondary/30 rounded-sm border"
+                  dangerouslySetInnerHTML={{ __html: note.content }}
+                />
               </div>
             )}
           </CardContent>
