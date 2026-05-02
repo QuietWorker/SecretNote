@@ -190,7 +190,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/30 border-t-primary mx-auto"></div>
           <p className="mt-3 text-sm text-muted-foreground">加载中...</p>
@@ -223,8 +223,8 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b sticky top-0 z-10 bg-white">
+    <div className="min-h-screen bg-background">
+      <header className="border-b sticky top-0 z-10 bg-background">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/dashboard">
             <Button
@@ -287,7 +287,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
 
               <div className="flex items-center gap-3">
                 {note.isEncrypted && (
-                  <div className="p-2 rounded-sm bg-gray-100">
+                  <div className="p-2 rounded-sm bg-secondary">
                     <Lock className="h-6 w-6 text-muted-foreground ml-4" />
                   </div>
                 )}
@@ -340,7 +340,7 @@ export default function NoteDetailPage({ params }: { params: { id: string } }) {
                   >
                     内容
                   </label>
-                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="border border-border rounded-lg overflow-hidden">
                     <EditorToolbar
                       editor={editor}
                       onImageUpload={handleImageUpload}

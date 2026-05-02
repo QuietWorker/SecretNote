@@ -147,8 +147,8 @@ export default function NewNotePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b sticky top-0 z-10 bg-white">
+    <div className="min-h-screen bg-background">
+      <header className="border-b sticky top-0 z-10 bg-background">
         <div className="container mx-auto px-4 py-4">
           <Link href="/dashboard">
             <Button
@@ -168,7 +168,7 @@ export default function NewNotePage() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between font-medium">
               <div className="flex items-center">
-                <div className="p-2 rounded-sm bg-gray-100 mr-3">
+                <div className="p-2 rounded-sm bg-secondary mr-3">
                   <Save className="h-5 w-5 text-muted-foreground" />
                 </div>
                 新建备忘录

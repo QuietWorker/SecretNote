@@ -15,6 +15,7 @@ import { highlightText } from "@/lib/highlight"
 import { Plus, FileText, LogOut, Lock, Trash2, ArrowUpDown, Search, CheckSquare, Square } from "lucide-react"
 import { signOut } from "next-auth/react"
 import { ConfirmDialog } from "@/components/ConfirmDialog"
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -281,7 +282,7 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary/30 border-t-primary mx-auto"></div>
           <p className="mt-3 text-sm text-muted-foreground">加载中...</p>
@@ -291,18 +292,19 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b sticky top-0 z-10 bg-white">
+      <header className="border-b sticky top-0 z-10 bg-background">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-sm bg-gray-100">
-              <Lock className="h-5 w-5 text-gray-600" />
+            <div className="p-2 rounded-sm bg-secondary">
+              <Lock className="h-5 w-5 text-muted-foreground" />
             </div>
             <h1 className="text-xl font-medium text-foreground">私密备忘录</h1>
           </div>
 
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <span className="text-sm text-muted-foreground hidden sm:inline-block">{session?.user?.email}</span>
             <Button
               variant="ghost"
@@ -446,7 +448,7 @@ export default function DashboardPage() {
         {notes.length === 0 ? (
           <Card className="text-center py-16 animate-subtle">
             <CardContent>
-              <div className="p-4 rounded-sm bg-gray-100 inline-block mb-4">
+              <div className="p-4 rounded-sm bg-secondary inline-block mb-4">
                 <FileText className="h-12 w-12 text-muted-foreground" />
               </div>
               <CardTitle className="text-lg mb-2 font-medium">暂无笔记</CardTitle>
@@ -507,7 +509,7 @@ export default function DashboardPage() {
                               {highlightText(note.title, activeSearch)}
                             </CardTitle>
                             {note.isEncrypted && (
-                              <div className="p-1 rounded-sm bg-gray-100">
+                              <div className="p-1 rounded-sm bg-secondary">
                                 <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
                               </div>
                             )}

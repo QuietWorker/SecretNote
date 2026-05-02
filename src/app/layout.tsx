@@ -19,7 +19,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN">
+    <html
+      lang="zh-CN"
+      suppressHydrationWarning
+    >
       <body className={notoSans.className}>
         <AuthProvider>{children}</AuthProvider>
       </body>

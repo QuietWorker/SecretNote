@@ -43,12 +43,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-subtle">
         <Card className="transition-all duration-200 hover:shadow-sm">
           <CardHeader className="space-y-1 pb-2">
             <div className="flex items-center justify-center mb-6">
-              <div className="p-3 rounded-sm bg-gray-100">
+              <div className="p-3 rounded-sm bg-secondary">
                 <Lock className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>

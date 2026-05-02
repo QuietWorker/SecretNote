@@ -42,7 +42,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         className={`p-2 rounded-sm hover:bg-secondary transition-colors ${editor.isActive("bold") ? "bg-secondary" : ""}`}
         title="粗体"
       >
-        <Bold className="w-4 h-4 text-muted-foreground" />
+        <Bold className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 斜体 */}
@@ -52,7 +52,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         className={`p-2 rounded-sm hover:bg-secondary transition-colors ${editor.isActive("italic") ? "bg-secondary" : ""}`}
         title="斜体"
       >
-        <Italic className="w-4 h-4 text-muted-foreground" />
+        <Italic className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 标题1 */}
@@ -64,7 +64,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         }`}
         title="标题1"
       >
-        <Heading1 className="w-4 h-4 text-muted-foreground" />
+        <Heading1 className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 标题2 */}
@@ -76,7 +76,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         }`}
         title="标题2"
       >
-        <Heading2 className="w-4 h-4 text-muted-foreground" />
+        <Heading2 className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 无序列表 */}
@@ -88,7 +88,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         }`}
         title="无序列表"
       >
-        <List className="w-4 h-4 text-muted-foreground" />
+        <List className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 分隔线 */}
@@ -101,7 +101,7 @@ export default function EditorToolbar({ editor, onImageUpload }: EditorToolbarPr
         className="p-2 rounded-sm hover:bg-secondary transition-colors"
         title="插入图片"
       >
-        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+        <ImageIcon className="w-4 h-4 text-foreground" />
       </button>
 
       {/* 隐藏的文件输入 */}
